@@ -20,7 +20,7 @@ pipeline {
                 '''
             }
         }
-        stage('Test'){      //1. see if there is 'index.html' 2. execute some test that this project has.
+        stage('Test'){
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -35,11 +35,11 @@ pipeline {
                 '''
               echo "index.html found!"
             }
-        }//in order to execute i need to run "npm test" 
-    post {
+        }
+    }
+        post {
         always {
             junit 'test-results/junit.xml'
         }
-    }
     }
 }
