@@ -21,6 +21,12 @@ pipeline {
             }
         }
         stage('Test'){      //1. see if there is 'index.html' 2. execute some test that this project has.
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                    }
+                }
             steps{
                 echo "Test stage"
                 sh '''
