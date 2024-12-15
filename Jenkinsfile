@@ -23,7 +23,9 @@ pipeline {
         stage('Test'){      //1. see if there is 'index.html' 2. execute some test that this project has.
             steps{
                 echo "Test stage"
-                sh "test -f build/index.html"
+                sh '''
+                    test -f build/index.html
+                '''
               echo "index.html found!"
             }
         }//in order to execute i need to run "npm test" 
