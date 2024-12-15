@@ -36,5 +36,10 @@ pipeline {
               echo "index.html found!"
             }
         }//in order to execute i need to run "npm test" 
+    post {
+        always {
+            junit 'test-results/junit.xml'
+        }
+    }
     }
 }
