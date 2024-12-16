@@ -38,6 +38,22 @@ pipeline {
               echo "index.html found!"
             }
         }
+
+        stage('E2E'){
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+                    reuseNode true
+                    }
+                }
+            steps{
+                sh '''
+                    npm install serve
+                    node_modules/serve -s build
+                    npx playwright test
+                '''
+            }
+        }
     }
     post {
         always {
