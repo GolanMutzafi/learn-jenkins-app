@@ -34,6 +34,8 @@ pipeline {
 
             steps {
                 sh '''
+                    npm cache clean --force
+                    npm cache verify
                     #test -f build/index.html
                     npm test
                 '''
