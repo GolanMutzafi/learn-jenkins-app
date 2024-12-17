@@ -31,10 +31,19 @@ pipeline {
                     reuseNode true
                 }
             }
-
             steps {
                 sh '''
-                    #test -f build/index.html
+                    # Clean npm cache and remove node_modules
+                    npm cache clean --force
+                    rm -rf node_modules package-lock.json
+
+                    # Install dependencies
+                    npm install --retry=3 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
+
+                    # Verify react-scripts is installed
+                    npx react-scripts --version || echo "react-scripts not installed"
+
+                    # Run tests
                     npm test
                 '''
             }
