@@ -58,10 +58,17 @@ pipeline {
             }
 
             steps {
-                sh '''
+                /*sh '''
                     npm install serve
                     node_modules/serve -s build &
                     sleep 10
+                    npx playwright test
+                '''*/
+                sh '''
+                    sleep 10
+                    chmod +x node_modules/.bin/serve
+                    node_modules/.bin/serve -s build &
+                    npx wait-on http://localhost:3000
                     npx playwright test
                 '''
             }
