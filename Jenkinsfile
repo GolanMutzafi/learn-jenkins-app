@@ -65,18 +65,22 @@ pipeline {
                     npx playwright test
                 '''*/
         stage('E2E') {
-            steps {
-                script {
-                    docker.image('mcr.microsoft.com/playwright:v1.49.1-noble').inside('-u 1000:1000') {
-                        sh '''
-                        npm install --retry=3 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
-                        sleep 10
+            script {
+                docker.image('mcr.microsoft.com/playwright:v1.49.1-noble').inside('-u 1000:1000') {
+                    sh '''
+                        npm install --force --retry=3 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
+                        if [ -f "node_modules/.bin/serve" ]; then
                         chmod +x node_modules/.bin/serve
-                        '''
-                    }
+                        else
+                        echo "serve binary not found!"
+                        exit 1
+                        fi
+                        # Run your E2E tests here
+                    '''
                 }
             }
         }
+
     }
     post {
         always {
