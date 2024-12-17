@@ -49,32 +49,35 @@ pipeline {
             }
         }
 
-        stage('E2E') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.49.1-noble'
-                    reuseNode true
-                }
-            }
+        // stage('E2E') {
+        //     agent {
+        //         docker {
+        //             image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+        //             reuseNode true
+        //         }
+        //     }
 
-            steps {
-                /*sh '''
+            /*steps {
+                sh '''
                     npm install serve
                     node_modules/serve -s build &
                     sleep 10
                     npx playwright test
                 '''*/
-                sh '''
-                    sleep 10
-                    chmod +x node_modules/.bin/serve
-                    node_modules/.bin/serve -s build &
-                    npx wait-on http://localhost:3000
-                    npx playwright test
-                '''
+        stage('E2E') {
+            steps {
+                script {
+                    docker.image('mcr.microsoft.com/playwright:v1.49.1-noble').inside('-u 1000:1000') {
+                        sh '''
+                        npm install --retry=3 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
+                        sleep 10
+                        chmod +x node_modules/.bin/serve
+                        '''
+                    }
+                }
             }
         }
     }
-
     post {
         always {
             junit 'jest-results/junit.xml'
